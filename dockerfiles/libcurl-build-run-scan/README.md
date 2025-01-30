@@ -40,7 +40,7 @@ The resulting image is minimal, distroless, and compatible with popular security
 
 ## Demo
 
-Build
+### Build
 
 ```
 $ docker build --progress plain --no-cache . --tag dynamic-binary
@@ -203,14 +203,14 @@ And custom base image cannot, as it has no shell:
 
 ```
 
-Test
+### Test
 
 ```
 $ docker run -ti dynamic-binary
 libcurl/8.11.1 OpenSSL/3.4.0 zlib/1.3.1 brotli/1.1.0 libpsl/0.21.5 nghttp2/1.64.0 OpenLDAP/2.6.9
 ```
 
-Scan
+### Scan
 
 ```
 $ syft dynamic-binary

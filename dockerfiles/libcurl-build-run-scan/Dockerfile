@@ -1,10 +1,13 @@
 # SPDX-FileCopyrightText: 2025 Chainguard, Inc.
 # SPDX-License-Identifier: Apache-2.0
 
-# Create a build container with toolchains
+# Pull unmodified base image
+FROM cgr.dev/chainguard/glibc-dynamic:latest AS base
+
+# Pull build container with toolchains and apk
 FROM cgr.dev/chainguard/gcc-glibc:latest-dev AS build
 
-# Get source code
+# Get workload source code
 COPY <<EOF ./test.c
 #include <stdio.h>
 #include <curl/curl.h>
@@ -16,17 +19,20 @@ EOF
 # Install build-time dependency
 RUN apk add pc:libcurl
 
-# Compile code
+# Compile workload code
 RUN gcc test.c `pkg-config --cflags --libs libcurl` -o dynamic-binary
 
-# Create temp apk root with runtime dependencies
-RUN apk add --root runtime-deps/ --initdb --keys-dir /etc/apk/keys -X https://packages.wolfi.dev/os so:libcurl.so.4
+# Copy base image contents to a subfolder
+COPY --from=base / /base-chroot
 
-# Copy our binary
-FROM cgr.dev/chainguard/static:latest AS static
+# Customize base image chroot
+RUN apk add --root /base-chroot so:libcurl.so.4
+
+# Create customized production image from scratch
+FROM scratch AS custom-production-image
+# Copy customized base image
+COPY --from=build /base-chroot /
+# Copy workload binary
 COPY --from=build /work/dynamic-binary /usr/bin/dynamic-binary
-
-# Copy runtime dependencies
-COPY --from=build /work/runtime-deps/./ /
 
 ENTRYPOINT ["/usr/bin/dynamic-binary"]

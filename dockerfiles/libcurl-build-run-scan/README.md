@@ -215,12 +215,12 @@ libcurl/8.11.1 OpenSSL/3.4.0 zlib/1.3.1 brotli/1.1.0 libpsl/0.21.5 nghttp2/1.64.
 ```
 $ syft dynamic-binary
  ✔ Loaded image                                                                                                                      dynamic-binary:latest
- ✔ Parsed image                                                                    sha256:e03a200e154ea5b372a702f4121d9df6e767295eccb64febc0b6699755595a99
- ✔ Cataloged contents                                                                     da8763d07c3373949af813a42ce4a127e77b06ceadfad757cb69e70ef663bcb6
-   ├── ✔ Packages                        [32 packages]  
-   ├── ✔ File digests                    [515 files]  
-   ├── ✔ File metadata                   [515 locations]  
-   └── ✔ Executables                     [143 executables]  
+ ✔ Parsed image                                                                    sha256:c67e3db0545f7f16150c68da30a543c8a7e1a13fb0a59f0d8ba652e7e3d8db87
+ ✔ Cataloged contents                                                                     e0dc266392797dfe58b927cf4dd0c7fc7639139eddff4c1c6370e8b1a6d4c2b8
+   ├── ✔ Packages                        [33 packages]  
+   ├── ✔ File digests                    [518 files]  
+   ├── ✔ File metadata                   [518 locations]  
+   └── ✔ Executables                     [144 executables]  
 NAME                    VERSION           TYPE   
 ca-certificates-bundle  20241121-r1       apk     
 cyrus-sasl              2.1.28-r5         apk     
@@ -245,6 +245,7 @@ libldap                 2.6.9-r0          apk
 libnghttp2-14           1.64.0-r1         apk     
 libpsl                  0.21.5-r4         apk     
 libssl3                 3.4.0-r6          apk     
+libstdc++               14.2.0-r8         apk     
 libunistring            1.3-r1            apk     
 libverto                0.3.2-r4          apk     
 libxcrypt               4.4.38-r0         apk     

@@ -184,19 +184,24 @@ $ docker build --progress plain --no-cache . --tag dynamic-binary
 #16 naming to docker.io/library/dynamic-binary done
 #16 DONE 0.1s
 ```
+</details>
 
 Observe that build image contains shell and is able to execute shell script triggers:
 ```
 #10 6.516 Executing glibc-2.40-r8.trigger
 #10 6.532 Executing busybox-1.37.0-r0.trigger
+#10 6.542 OK: 622 MiB in 95 packages
+#10 DONE 6.6s
 ```
 
 And custom base image cannot, as it has no shell:
 ```
 #13 3.907 Executing glibc-2.40-r8.trigger
 #13 3.911 ERROR: glibc-2.40-r8.trigger: script exited with error 127
+#13 3.914 OK: 35 MiB in 33 packages
+#13 DONE 4.0s
+
 ```
-</details>
 
 Test
 

@@ -1,12 +1,18 @@
 # SPDX-FileCopyrightText: 2025 Chainguard, Inc.
 # SPDX-License-Identifier: Apache-2.0
 
-# Pull unmodified base image
-FROM cgr.dev/chainguard/glibc-dynamic:latest AS base
-
-# Pull build container with toolchains and apk
+# Pull build container with apk, and optionally toolchains
 FROM cgr.dev/chainguard/gcc-glibc:latest-dev AS build
 
+# Link existing single layer base image to customize
+COPY --link --from=cgr.dev/chainguard/glibc-dynamic:latest / /base-chroot
+
+# Customize final image by adding packages to it
+RUN apk add --no-cache --root /base-chroot curl so:libcurl.so.4
+
+## Optionally install toolchain dependencies & compile custom workload
+# Install build-time dependency
+RUN apk add pc:libcurl
 # Get workload source code
 COPY <<EOF ./test.c
 #include <stdio.h>
@@ -15,24 +21,14 @@ void main(){
     printf("%s\\n", curl_version());
 }
 EOF
-
-# Install build-time dependency
-RUN apk add pc:libcurl
-
 # Compile workload code
-RUN gcc test.c `pkg-config --cflags --libs libcurl` -o dynamic-binary
+RUN gcc test.c `pkg-config --cflags --libs libcurl` -o /base-chroot/usr/bin/dynamic-binary
 
-# Copy base image contents to a subfolder
-COPY --from=base / /base-chroot
-
-# Customize base image chroot
-RUN apk add --root /base-chroot so:libcurl.so.4
-
-# Create customized production image from scratch
-FROM scratch AS custom-production-image
-# Copy customized base image
-COPY --from=build /base-chroot /
-# Copy workload binary
-COPY --from=build /work/dynamic-binary /usr/bin/dynamic-binary
+# Create customized production image, use the same from as base image
+# to preserve all the image settings.  If original base settings are
+# not important, but smallest final image size is, use FROM scratch
+# here.
+FROM cgr.dev/chainguard/glibc-dynamic:latest AS final
+COPY --link --from=build /base-chroot /
 
 ENTRYPOINT ["/usr/bin/dynamic-binary"]

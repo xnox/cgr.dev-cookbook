@@ -1,5 +1,3 @@
-# syntax=docker/dockerfile:1
-
 # SPDX-FileCopyrightText: 2025 Chainguard, Inc.
 # SPDX-License-Identifier: Apache-2.0
 
@@ -14,12 +12,11 @@ ARG FROM=cgr.dev/chainguard/jdk:latest-dev
 FROM ${FROM}
 
 USER root
-RUN <<EOT
-    mv /usr/sbin/* /usr/bin/
-    rmdir /usr/sbin
-    ln -sf bin /usr/sbin
-    cp /lib/ld-* /usr/lib/
-    /usr/lib/ld-* --inhibit-cache /usr/bin/busybox mv /lib/* /usr/lib/
-    /usr/lib/ld-* --inhibit-cache /usr/bin/busybox rmdir /lib
+RUN set -e; \
+    mv /usr/sbin/* /usr/bin/; \
+    rmdir /usr/sbin; \
+    ln -sf bin /usr/sbin; \
+    cp /lib/ld-* /usr/lib/; \
+    /usr/lib/ld-* --inhibit-cache /usr/bin/busybox mv /lib/* /usr/lib/; \
+    /usr/lib/ld-* --inhibit-cache /usr/bin/busybox rmdir /lib; \
     /usr/lib/ld-* --inhibit-cache /usr/bin/busybox ln -s usr/lib /lib
-EOT

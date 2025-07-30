@@ -53,7 +53,7 @@
         <dependency>
           <groupId>org.bouncycastle</groupId>
           <artifactId>bcutil-fips</artifactId>
-          <version>2.0.3</version>
+          <version>2.1.4</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.bouncycastle/bcpg-fips -->
         <dependency>
